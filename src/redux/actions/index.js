@@ -3,7 +3,7 @@ const getAccessToken = localStorage.getItem("jwtToken");
 
 export const registerUser = (user, history) => (dispatch) => {
   axios
-    .post("http://6f608c56145c.ngrok.io/api/user/signup", user)
+    .post("http://3aa4065a2e08.ngrok.io/api/user/signup", user)
     .then((res) => (window.location = "/"))
     .catch((err) => {
       dispatch({
@@ -15,7 +15,7 @@ export const registerUser = (user, history) => (dispatch) => {
 
 export const loginUser = (user, history) => (dispatch) => {
   axios
-    .post("http://6f608c56145c.ngrok.io/api/user/login", user)
+    .post("http://3aa4065a2e08.ngrok.io/api/user/login", user)
     .then((res) => {
       console.log(res);
       const token = res.data.token;
@@ -29,15 +29,10 @@ export const loginUser = (user, history) => (dispatch) => {
       });
     });
 };
-
+axios.defaults.headers.common["Authorization"] = `Bearer ${getAccessToken}`;
 export const createTodo = (user, history) => (dispatch) => {
   axios
-    .post("http://6f608c56145c.ngrok.io/api/todo/add", user, {
-      headers: {
-        Authorization: `Bearer ${getAccessToken}`,
-        "Content-Type": "application/json",
-      },
-    })
+    .post("http://3aa4065a2e08.ngrok.io/api/todo/add", user, {})
     .then((res) => console.log("Working", res.data))
     .catch((err) => {
       dispatch({
@@ -49,12 +44,7 @@ export const createTodo = (user, history) => (dispatch) => {
 
 export const getAllTodo = (user, history) => (dispatch) => {
   axios
-    .get("http://6f608c56145c.ngrok.io/api/todo/all", user, {
-      headers: {
-        Authorization: `Bearer ${getAccessToken}`,
-        "Content-Type": "application/json",
-      },
-    })
+    .get("http://3aa4065a2e08.ngrok.io/api/todo/all", user, {})
     .then((res) =>
       dispatch({
         type: "SUCCESS_TODO",
@@ -71,12 +61,7 @@ export const getAllTodo = (user, history) => (dispatch) => {
 
 export const deleteTodo = (index, history) => (dispatch) => {
   axios
-    .delete(`http://6f608c56145c.ngrok.io/api/todo/${index}`, {
-      headers: {
-        Authorization: `Bearer ${getAccessToken}`,
-        "Content-Type": "application/json",
-      },
-    })
+    .delete(`http://3aa4065a2e08.ngrok.io/api/todo/${index}`, {})
     .then((res) =>
       dispatch({
         type: "SUCCESS_TODO",

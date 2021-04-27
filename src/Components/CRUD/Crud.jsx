@@ -55,7 +55,7 @@ function Crud(props) {
 
   useEffect(() => {
     props.getAllTodo();
-  }, []);
+  }, [props.auth.list]);
 
   return (
     <>
