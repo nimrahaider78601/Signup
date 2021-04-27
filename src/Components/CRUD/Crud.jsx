@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, withRouter } from "react-router-dom";
 import "./Crud.scss";
 import {
   Card,
@@ -15,101 +15,118 @@ import {
   makeStyles,
 } from "@material-ui/core";
 
+import { createTodo, getAllTodo, deleteTodo } from "../../redux/actions/index";
+import { connect } from "react-redux";
+import CardDetails from "./CardDetails";
+import Navbar from "../Navbar/Navbar";
 const useStyles = makeStyles({
   root: {
     maxWidth: 345,
   },
 });
 
-const todoList = [
-  {
-    id: 1,
-    primary: "Example TODO item",
-    secondary:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias libero qui voluptatibus.",
-  },
-  {
-    id: 2,
-    primary: "This is Task Title",
-    secondary:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias libero qui voluptatibus.",
-  },
-  {
-    id: 3,
-    primary: "Cool Task",
-    secondary:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias libero qui voluptatibus.",
-  },
-  {
-    id: 4,
-    primary: "Yes! Another Cool Task",
-    secondary:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias libero qui voluptatibus.",
-  },
-];
-
-export default function Crud() {
+function Crud(props) {
+  console.log(props);
   const classes = useStyles();
+  const [getTodoList, setTodoList] = useState({
+    title: "",
+    description: "",
+  });
+  const [getTodo, setTodo] = useState("");
+
+  const handleChange = (event) => {
+    setTodoList({
+      ...getTodoList,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.target.reset();
+    e.preventDefault();
+    props.createTodo(getTodoList, props.history);
+  };
+
+  useEffect(() => {
+    if (props.auth.list) {
+      setTodo(props.auth.list);
+    }
+  }, [props.auth.list]);
+
+  useEffect(() => {
+    props.getAllTodo();
+  }, []);
+
   return (
     <>
+      <Navbar />
       <Grid item xs={12} className="crud_main">
         <Box p={10}>
-          <Box mb={5}>
-            <Typography component="h1" variant="h5">
-              TODO App
-            </Typography>
-          </Box>
-          <Box mb={5}>
-            <TextField
-              autoComplete="Title"
-              name="title"
-              variant="outlined"
-              required={true}
-              fullWidth
-              id="title"
-              label="Title"
-              autoFocus
-            />
-          </Box>
-          <Box mb={5}>
-            <TextField
-              autoComplete="Text"
-              name="Text"
-              variant="outlined"
-              required={true}
-              fullWidth
-              id="Text"
-              label="Text"
-              autoFocus
-            />
-          </Box>
-          <Box mb={5}>
-            <Button type="submit" variant="contained" color="primary">
-              Submit
-            </Button>
-          </Box>
+          <form className={classes.form} onSubmit={handleSubmit}>
+            <Box mb={5}>
+              <Typography component="h1" variant="h5">
+                TODO App
+              </Typography>
+            </Box>
+
+            <Box mb={5}>
+              <TextField
+                onChange={handleChange}
+                autoComplete="Title"
+                name="title"
+                variant="outlined"
+                required={true}
+                fullWidth
+                id="title"
+                label="Title"
+                autoFocus
+              />
+            </Box>
+            <Box mb={5}>
+              <TextField
+                onChange={handleChange}
+                autoComplete="Description"
+                name="description"
+                variant="outlined"
+                required={true}
+                fullWidth
+                id="description"
+                label="Description"
+                autoFocus
+              />
+            </Box>
+            <Box mb={5}>
+              <Button type="submit" variant="contained" color="primary">
+                Submit
+              </Button>
+            </Box>
+          </form>
           <Divider />
           <Box my={5}>
             <Grid container spacing={2}>
-              {todoList.map(({ id, primary, secondary }) => (
-                <Grid item md={3}>
+              {(getTodo.todosList || []).map((item, i) => (
+                <Grid item md={3} key={i}>
                   <Card className={classes.root}>
                     <Link
                       className="link"
-                      params={{ testvalue: "hello" }}
-                      to={`/cardDetails/${id}`}
+                      to={{
+                        pathname: `/cardDetails/${i}`,
+                        state: {
+                          fromNotifications: item,
+                        },
+                      }}
                     >
                       <CardActionArea>
                         <CardContent>
                           <Typography gutterBottom variant="h5" component="h2">
-                            {primary}
+                            {item.title}
                           </Typography>
                           <Typography
                             variant="body1"
                             color="textSecondary"
                             component="p"
                           >
-                            {secondary}
+                            {item.description}
                           </Typography>
                         </CardContent>
                       </CardActionArea>
@@ -118,7 +135,11 @@ export default function Crud() {
                       <Button variant="contained" color="primary">
                         Edit
                       </Button>
-                      <Button variant="contained" color="secondary">
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => props.deleteTodo(item._id)}
+                      >
                         Delete
                       </Button>
                     </CardActions>
@@ -132,3 +153,10 @@ export default function Crud() {
     </>
   );
 }
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+  errors: state.errors,
+});
+export default connect(mapStateToProps, { createTodo, getAllTodo, deleteTodo })(
+  withRouter(Crud)
+);

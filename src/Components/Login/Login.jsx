@@ -15,6 +15,7 @@ import {
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { loginUser } from "../../redux/actions/index";
 import { connect } from "react-redux";
+import Navbar from "./../Navbar/Navbar";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -57,61 +58,64 @@ function SignIn(props) {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-        <form className={classes.form} onSubmit={handleSubmit}>
-          <TextField
-            onChange={handleChange}
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            onChange={handleChange}
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
+    <>
+      <Navbar />
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
+          <form className={classes.form} onSubmit={handleSubmit}>
+            <TextField
+              onChange={handleChange}
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+            />
+            <TextField
+              onChange={handleChange}
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+            />
 
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Sign In
-          </Button>
-          <Grid container justify="flex-end">
-            <Grid item>
-              <Link to="/register" variant="body2">
-                Don't have an account? Sign Up
-              </Link>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              Sign In
+            </Button>
+            <Grid container justify="flex-end">
+              <Grid item>
+                <Link to="/register" variant="body2">
+                  Don't have an account? Sign Up
+                </Link>
+              </Grid>
             </Grid>
-          </Grid>
-        </form>
-      </div>
-      <Box mt={8}>© Torque 2021. All rights reserved.</Box>
-    </Container>
+          </form>
+        </div>
+        <Box mt={8}>© Torque 2021. All rights reserved.</Box>
+      </Container>
+    </>
   );
 }
 
